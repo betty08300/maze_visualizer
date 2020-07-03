@@ -1,8 +1,11 @@
 const GRID_HEIGHT = 20;
 const GRID_WIDTH = 20;
-
-
 const SPACE_SIZE = 15; // 15 pixels
+
+const randomNum = (max) => Math.floor(Math.random() * max);
+
+const randomEle = (array) => array[randomNum(array.length)];
+
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
@@ -19,14 +22,45 @@ class Graph {
       for (let j = 0; j < GRID_WIDTH; j++) {
         row.push(0);
         this.edges[Graph.getNodeId(i, j)] = {
-          up: true,
-          down: true,
-          right: true,
-          left: true,
+          up: false,
+          down: false,
+          right: false,
+          left: false,
         };
       }
       this.grid.push(row);
     }
+
+    const edges = this.generateMaze();
+    edges.forEach((edge) => {
+      const { src, dst, direction } = edge;
+      // this.edges[src][direction] = true;
+      if (direction === 'up') {
+        this.edges[src].up = true;
+        this.edges[dst].down = true;
+      }
+
+      if (direction === 'down') {
+        this.edges[src].down = true;
+        this.edges[dst].up = true;
+      }
+
+      if (direction === 'right') {
+        this.edges[src].right = true;
+        this.edges[dst].left = true;
+      }
+
+      if (direction === 'left') {
+        this.edges[src].left = true;
+        this.edges[dst].right = true;
+      }
+    })
+
+    const allNodes = Object.keys(this.edges);
+    this.start = randomEle(allNodes).split(',').map(Number);
+    const startIdx = allNodes.indexOf(this.start);
+    allNodes.splice(startIdx, 1)
+    this.end = randomEle(allNodes).split(',').map(Number);
   }
 
   static getNodeId(i, j) {
@@ -42,23 +76,24 @@ class Graph {
     ctx.stroke();
   }
 
-  getNeighbors(row, col) {
+  getNeighbors(nodeId) {
+    const [row, col] = nodeId.split(',').map(Number);
     let res = []
     const directions = this.edges[Graph.getNodeId(row, col)];
-    if (directions.up) {
-      res.push([row - 1, col])
+    if (row > 0) {
+      res.push({ direction: 'up', dst: String([row - 1, col]) })
     }
 
-    if (directions.down) {
-      res.push([row + 1, col])
+    if (row < this.grid.length - 1) {
+      res.push({ direction: 'down', dst: String([row + 1, col]) })
     }
 
-    if (directions.left) {
-      res.push([row, col - 1])
+    if (col > 0) {
+      res.push({ direction: 'left', dst: String([row, col - 1]) })
     }
 
-    if (directions.right) {
-      res.push([row, col + 1])
+    if (col < this.grid[0].length - 1) {
+      res.push({ direction: 'right', dst: String([row, col + 1]) })
     }
 
     return res;
@@ -71,7 +106,7 @@ class Graph {
         let horizontalOffset = (j * SPACE_SIZE) * 2;
 
         // draw node
-        Graph.drawNode(i, j, 'purple');
+        Graph.drawNode(i, j, 'white');
 
         // draw its edges
         let neighbors = this.edges[Graph.getNodeId(i, j)];
@@ -101,43 +136,53 @@ class Graph {
         ctx.stroke();
       }
     }
+    Graph.drawNode(...this.start, "blue")
+    Graph.drawNode(...this.end, "red")
   }
 
   generateMaze() {
-    const start = Graph.getNodeId(0, 0);
-    let tree = Set([start]);
-    // let frontierEdges = [this.getNeighbors[start]];
-    const getUnvisitedNeighbors = (node) => {
-      // TODO
+    const start = '0,0';
+    const tree = new Set([start]);
+
+    const getEdges = nodeId => {
+      return this.getNeighbors(nodeId)
+        .filter(data => {
+          const { direction, dst } = data;
+          return !(tree.has(dst));
+        })
+        .map(data => {
+          const { direction, dst } = data;
+          return {
+            src: nodeId,
+            dst: dst,
+            direction
+          }
+        });
     };
 
-    while (tree.size < GRID_WIDTH * GRID_HEIGHT) {
+    let frontierEdges = [...getEdges(start)];
+    const chosenEdges = [];
 
+    while (tree.size < GRID_WIDTH * GRID_HEIGHT) {
+      const edge = randomEle(frontierEdges);
+      chosenEdges.push(edge);
+      tree.add(edge.dst);
+
+      const newFrontier = [];
+      for (let nodeId of tree) {
+        newFrontier.push(...getEdges(nodeId));
+      }
+
+      frontierEdges = newFrontier;
     }
 
+    return chosenEdges;
   }
 }
 
 const g = new Graph();
 
-console.log(g.getNeighbors(3, 4)); // [ [2, 4], [3, 3], [4, 5], [3, 5]   ]
-
-// g.edges[Graph.getNodeId(3, 6)] = {
-//   up: true,
-//   down: true,
-//   left: false,
-//   right: false,
-// }
-//console.log(g);
-// g.grid[3][5] = 1
-// g.grid[3][6] = 1
-// console.log(g.edges)
-
-
-
-
 g.draw()
-// ctx.beginPath();
-// ctx.fillStyle = 'blue';
-// ctx.fillRect(20, 20, 100, 100);
-// ctx.stroke();
+
+
+

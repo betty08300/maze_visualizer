@@ -6,6 +6,12 @@ const randomNum = (max) => Math.floor(Math.random() * max);
 
 const randomEle = (array) => array[randomNum(array.length)];
 
+const wait = (ms) => {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(), ms);
+  })
+};
+
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
@@ -34,7 +40,6 @@ class Graph {
     const edges = this.generateMaze();
     edges.forEach((edge) => {
       const { src, dst, direction } = edge;
-      // this.edges[src][direction] = true;
       if (direction === 'up') {
         this.edges[src].up = true;
         this.edges[dst].down = true;
@@ -67,13 +72,57 @@ class Graph {
     return i + "," + j;
   }
 
-  static drawNode(row, col, color) {
+  static drawNode(row, col, color, edge = null) {
+    row = Number(row);
+    col = Number(col);
     let verticalOffset = (row * SPACE_SIZE) * 2;
     let horizontalOffset = (col * SPACE_SIZE) * 2;
+
+    // draw the node
     ctx.beginPath();
     ctx.fillStyle = color;
     ctx.fillRect(horizontalOffset, verticalOffset, SPACE_SIZE, SPACE_SIZE);
     ctx.stroke();
+
+    // draw the edge
+    if (edge !== null) {
+      if (edge === 'up') {
+        ctx.beginPath();
+        ctx.fillStyle = color;
+        ctx.fillRect(horizontalOffset, verticalOffset - SPACE_SIZE, SPACE_SIZE, SPACE_SIZE);
+        ctx.stroke();
+      }
+      if (edge === 'down') {
+        ctx.beginPath();
+        ctx.fillStyle = color;
+        ctx.fillRect(horizontalOffset, verticalOffset + SPACE_SIZE, SPACE_SIZE, SPACE_SIZE);
+        ctx.stroke();
+      }
+      if (edge === 'left') {
+        ctx.beginPath();
+        ctx.fillStyle = color;
+        ctx.fillRect(horizontalOffset - SPACE_SIZE, verticalOffset, SPACE_SIZE, SPACE_SIZE);
+        ctx.stroke();
+      }
+      if (edge === 'right') {
+        ctx.beginPath();
+        ctx.fillStyle = color;
+        ctx.fillRect(horizontalOffset + SPACE_SIZE, verticalOffset, SPACE_SIZE, SPACE_SIZE);
+        ctx.stroke();
+      }
+    }
+  }
+
+  static retrace(path, end) {
+    const nodes = [];
+    let curr = end;
+
+    while (path[curr] !== null) {
+      nodes.push(curr);
+      curr = path[curr];
+    }
+
+    return nodes;
   }
 
   getNeighbors(nodeId) {
@@ -97,6 +146,20 @@ class Graph {
     }
 
     return res;
+  }
+
+  getConnectedNeighbors(nodeId) {
+    const neighbors = {};
+    const connectedNeighbors = [];
+    this.getNeighbors(nodeId).forEach((obj) => neighbors[obj.direction] = obj.dst);
+    let edges = this.edges[nodeId];
+    for (let direction in edges) {
+      if (edges[direction] === true) {
+        connectedNeighbors.push({ direction, neighbor: neighbors[direction] });
+      }
+    }
+
+    return connectedNeighbors;
   }
 
   draw() {
@@ -136,8 +199,6 @@ class Graph {
         ctx.stroke();
       }
     }
-    Graph.drawNode(...this.start, "blue")
-    Graph.drawNode(...this.end, "red")
   }
 
   generateMaze() {
@@ -178,11 +239,54 @@ class Graph {
 
     return chosenEdges;
   }
+
+  async dfs() {
+    const start = this.start.join(',');
+    const end = this.end.join(',');
+    const stack = [{ src: null, direction: null, dst: start }];
+    const stacked = new Set([start]);
+    const visited = new Set([]);
+    const path = {};
+
+    while (!(visited.has(end))) {
+      const currentObj = stack.pop();
+
+      // draw this node and it's leading edge
+      const dst = currentObj.dst.split(',').map(Number);
+
+      const opposite = {
+        left: 'right',
+        right: 'left',
+        up: 'down',
+        down: 'up',
+      };
+
+      Graph.drawNode(...dst, 'purple', opposite[currentObj.direction]);
+      await wait(10);
+
+      path[currentObj.dst] = currentObj.src;
+      visited.add(currentObj.dst);
+      const neighborObjs = this.getConnectedNeighbors(currentObj.dst);
+      neighborObjs.forEach((obj) => {
+        if (!(stacked.has(obj.neighbor))) {
+          const newStackItem = { src: currentObj.dst, direction: obj.direction, dst: obj.neighbor };
+          stack.push(newStackItem);
+          stacked.add(obj.neighbor);
+        }
+      });
+    }
+
+    // draw the winning path from start to end
+    const winningPath = Graph.retrace(path, end).map((pos) => pos.split(','));;
+    winningPath.forEach((pos) => Graph.drawNode(...pos, 'pink'));
+
+    // draw the start and end nodes
+    Graph.drawNode(...this.start, "blue");
+    Graph.drawNode(...this.end, "red");
+  }
 }
 
 const g = new Graph();
 
 g.draw()
-
-
-
+g.dfs();

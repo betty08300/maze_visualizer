@@ -1,0 +1,23 @@
+{
+  "name": "maze_visualizer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bundle.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon --ignore './bundle.js' browserify graph.js -o bundle.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/betty08300/data_structure_project.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/betty08300/data_structure_project/issues"
+  },
+  "homepage": "https://github.com/betty08300/data_structure_project#readme",
+  "dependencies": {
+    "nodemon": "^2.0.4"
+  }
+}

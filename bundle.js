@@ -1,3 +1,33 @@
+(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+const randomNum = (max) => Math.floor(Math.random() * max);
+
+const randomEle = (array) => array[randomNum(array.length)];
+
+const wait = (ms) => {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(), ms);
+  })
+};
+
+const OPPOSITE = {
+  left: 'right',
+  right: 'left',
+  up: 'down',
+  down: 'up',
+};
+
+
+module.exports = {
+  GRID_HEIGHT: 20,
+  GRID_WIDTH: 20,
+  SPACE_SIZE: 15,
+  ANIMATION_FRAME_TIME: 20,
+  OPPOSITE, 
+  randomNum,
+  randomEle, 
+  wait 
+};
+},{}],2:[function(require,module,exports){
 const {
   GRID_HEIGHT,
   GRID_WIDTH,
@@ -253,3 +283,13 @@ class Graph {
 }
 
 module.exports = Graph;
+},{"./constants":1}],3:[function(require,module,exports){
+const Graph = require('./graph');
+
+const g1 = new Graph(document.getElementById("canvas1"));
+const g2 = new Graph(document.getElementById("canvas2"), g1.edges, g1.start, g1.end);
+
+g1.dfs();
+g2.bfs();
+
+},{"./graph":2}]},{},[3]);

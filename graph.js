@@ -6,6 +6,7 @@ const {
   OPPOSITE,
   randomNum,
   randomEle,
+  COLOR,
   wait
 } = require('./constants');
 
@@ -54,23 +55,24 @@ class Graph {
       this.end = end;
 
     this.draw();
-    this.drawNode(...this.start, "blue");
-    this.drawNode(...this.end, "red");
+    this.drawStart();
+    this.drawEnd();
   }
 
   static getNodeId(i, j) {
     return i + "," + j;
   }
 
-  drawNode(row, col, color, edgeDirection = null) {
+  drawNode(row, col, COLOR, edgeDirection = null) {
+
     row = Number(row);
     col = Number(col);
     let verticalOffset = (row * SPACE_SIZE) * 2;
     let horizontalOffset = (col * SPACE_SIZE) * 2;
 
     // draw the node
+    this.ctx.fillStyle = COLOR;
     this.ctx.beginPath();
-    this.ctx.fillStyle = color;
     this.ctx.fillRect(horizontalOffset, verticalOffset, SPACE_SIZE, SPACE_SIZE);
     this.ctx.stroke();
 
@@ -83,22 +85,24 @@ class Graph {
 
     if (edgeDirection !== null) {
       const delta = edgeDelta[edgeDirection];
+      this.ctx.fillStyle = COLOR;
       this.ctx.beginPath();
-      this.ctx.fillStyle = color;
       this.ctx.fillRect(horizontalOffset + delta.horizontalDelta, verticalOffset + delta.verticalDelta, SPACE_SIZE, SPACE_SIZE);
       this.ctx.stroke();
     }
   }
 
   async retrace(path, end) {
+    const pos = end.split(',')
+    this.drawNode(...pos, COLOR.path);
     let curr = end;
 
     while (path[curr].node !== null) {
       const pathObj = path[curr];
       curr = pathObj.node;
       const pos = curr.split(',');
+      this.drawNode(...pos, COLOR.path, pathObj.direction);
       await wait(ANIMATION_FRAME_TIME);
-      this.drawNode(...pos, 'pink', pathObj.direction)
     }
   }
 
@@ -154,6 +158,14 @@ class Graph {
     }
   }
 
+  drawStart() {
+    this.drawNode(...this.start, COLOR.start);
+  }
+
+  drawEnd() {
+    this.drawNode(...this.end, COLOR.end);
+  }
+
   generateMaze() {
     const start = '0,0';
     const tree = new Set([start]);
@@ -192,13 +204,16 @@ class Graph {
     const path = {};
 
     while (!(visited.has(end))) {
+      document.getElementById('dfs-step').innerHTML = visited.size;
+
       const currentObj = stack.pop();
       visited.add(currentObj.dst);
       path[currentObj.dst] = { node: currentObj.src, direction: currentObj.direction };
 
       const dst = currentObj.dst.split(',').map(Number);
+      this.drawNode(...dst, COLOR.exploredNode, OPPOSITE[currentObj.direction]);
 
-      this.drawNode(...dst, 'purple', OPPOSITE[currentObj.direction]);
+      this.drawStart();
       await wait(ANIMATION_FRAME_TIME);
 
       const neighborObjs = this.getConnectedNeighbors(currentObj.dst);
@@ -213,11 +228,108 @@ class Graph {
 
     await this.retrace(path, end);
 
-    this.drawNode(...this.start, "blue");
-    this.drawNode(...this.end, "red");
+    this.drawStart();
+    this.drawEnd();
   }
 
   async bfs() {
+    const start = this.start.join(',');
+    const end = this.end.join(',');
+    const queue = [{ src: null, direction: null, dst: start }];
+    const queued = new Set([start]);
+    const visited = new Set([]);
+    const path = {};
+
+    while (!(visited.has(end))) {
+      document.getElementById('bfs-step').innerHTML = visited.size;
+      const currentObj = queue.shift();
+      visited.add(currentObj.dst);
+      path[currentObj.dst] = { node: currentObj.src, direction: currentObj.direction };
+
+      const dst = currentObj.dst.split(',').map(Number);
+      this.drawNode(...dst, COLOR.exploredNode, OPPOSITE[currentObj.direction]);
+
+      this.drawStart();
+
+      await wait(ANIMATION_FRAME_TIME);
+
+      const neighborObjs = this.getConnectedNeighbors(currentObj.dst);
+      neighborObjs.forEach(obj => {
+        if (!(queued.has(obj.neighbor))) {
+          const newStackItem = { src: currentObj.dst, direction: obj.direction, dst: obj.neighbor };
+          queue.push(newStackItem);
+          queued.add(obj.neighbor);
+        }
+      });
+    }
+
+    await this.retrace(path, end);
+
+    this.drawStart();
+    this.drawEnd();
+  }
+
+  async doubleBfs() {
+    const a = this.start.join(',');
+    const b = this.end.join(',');
+    const queueA = [{ src: null, direction: null, dst: a }];
+    const queueB = [{ src: null, direction: null, dst: b }];
+    const queuedA = new Set([a]);
+    const queuedB = new Set([b]);
+    const visitedA = new Set([]);
+    const visitedB = new Set([]);
+    const pathA = {};
+    const pathB = {};
+
+    let middlePoint = null;
+    while (!(visitedA.has(middlePoint) && visitedB.has(middlePoint))) {
+      document.getElementById('double-bfs-step').innerHTML = visitedA.size + visitedB.size;
+      const currentObjA = queueA.shift();
+      visitedA.add(currentObjA.dst);
+      if (visitedB.has(currentObjA.dst))
+        middlePoint = currentObjA.dst;
+
+      pathA[currentObjA.dst] = { node: currentObjA.src, direction: currentObjA.direction };
+      const dstA = currentObjA.dst.split(',').map(Number);
+      this.drawNode(...dstA, COLOR.exploredNode, OPPOSITE[currentObjA.direction]);
+      const neighborObjsA = this.getConnectedNeighbors(currentObjA.dst);
+      neighborObjsA.forEach(obj => {
+        if (!(queuedA.has(obj.neighbor))) {
+          const newStackItem = { src: currentObjA.dst, direction: obj.direction, dst: obj.neighbor };
+          queueA.push(newStackItem);
+          queuedA.add(obj.neighbor);
+        }
+      });
+
+      const currentObjB = queueB.shift();
+      visitedB.add(currentObjB.dst);
+      if (visitedA.has(currentObjB.dst))
+        middlePoint = currentObjB.dst;
+      pathB[currentObjB.dst] = { node: currentObjB.src, direction: currentObjB.direction };
+      const dstB = currentObjB.dst.split(',').map(Number);
+      this.drawNode(...dstB, COLOR.exploredNode, OPPOSITE[currentObjB.direction]);
+      const neighborObjsB = this.getConnectedNeighbors(currentObjB.dst);
+      neighborObjsB.forEach(obj => {
+        if (!(queuedB.has(obj.neighbor))) {
+          const newStackItem = { src: currentObjB.dst, direction: obj.direction, dst: obj.neighbor };
+          queueB.push(newStackItem);
+          queuedB.add(obj.neighbor);
+        }
+      });
+
+      this.drawStart();
+      this.drawEnd();
+      await wait(ANIMATION_FRAME_TIME);
+    }
+
+    await this.retrace(pathA, middlePoint);
+    await this.retrace(pathB, middlePoint);
+
+    this.drawStart();
+    this.drawEnd();
+  }
+
+  async randoSearch(){
     const start = this.start.join(',');
     const end = this.end.join(',');
     const stack = [{ src: null, direction: null, dst: start }];
@@ -226,13 +338,17 @@ class Graph {
     const path = {};
 
     while (!(visited.has(end))) {
-      const currentObj = stack.shift();
+      document.getElementById('random-step').innerHTML = visited.size;
+
+      const randomIdx = randomNum(stack.length);
+      const currentObj = stack.splice(randomIdx, 1)[0];
       visited.add(currentObj.dst);
       path[currentObj.dst] = { node: currentObj.src, direction: currentObj.direction };
 
       const dst = currentObj.dst.split(',').map(Number);
+      this.drawNode(...dst, COLOR.exploredNode, OPPOSITE[currentObj.direction]);
 
-      this.drawNode(...dst, 'purple', OPPOSITE[currentObj.direction]);
+      this.drawStart();
       await wait(ANIMATION_FRAME_TIME);
 
       const neighborObjs = this.getConnectedNeighbors(currentObj.dst);
@@ -247,8 +363,8 @@ class Graph {
 
     await this.retrace(path, end);
 
-    this.drawNode(...this.start, "blue");
-    this.drawNode(...this.end, "red");
+    this.drawStart();
+    this.drawEnd();
   }
 }
 

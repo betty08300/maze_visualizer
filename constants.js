@@ -21,8 +21,14 @@ module.exports = {
   GRID_WIDTH: 20,
   SPACE_SIZE: 15,
   ANIMATION_FRAME_TIME: 20,
-  OPPOSITE, 
+  COLOR: {
+    exploredNode: 'purple',
+    path: 'pink',
+    start: 'blue',
+    end: 'red'
+  },
+  OPPOSITE,
   randomNum,
-  randomEle, 
-  wait 
+  randomEle,
+  wait
 };

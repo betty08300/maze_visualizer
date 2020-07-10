@@ -11,48 +11,76 @@
 <body>
   <div class='wrapper'>
     <div class="column">
-      <div class="row">
+      <div class="title-container">
+        <div class="row project-title">Path Finding Visualizer</div>
+        <div class="project-description">
+          <div class="row">How is the maze generated?</div>
+          <p class="row">
+            A 20 x 20 grid of nodes is created. Nodes are first connected to all
+            neighboring nodes through edges. This yields an initial graph.
+            To turn this graph into a proper maze, we must "remove" some edges to
+            make the maze reasonably difficult.
+          </p>
+          <p class="row">
+            To derive a maze from the graph,<a href="https://en.wikipedia.org/wiki/Prim%27s_algorithm"><div>Prim's Algorithm</div></a>
+            is used to construct a random minimal spanning tree from the graph.
+            A minimal spanning tree ensures that there is exactly one unique path
+            between any two points in the graph. The start and end points are randomly
+            selected.
+          </p>
+        </div>
+      </div>
+
+      <div class="row maze-canvas">
         <div class='column'>
-          <div class='title'>DFS Step:
-            <span id='dfs-step'>0</span>
+          <div class='title'> Depth-First Search
+            <div class='row'>Step:
+              <span id='dfs-step'>0</span>
+            </div>
           </div>
-          <canvas id="canvas1" width="600" height="600" style="border:1px solid #000000;">
+          <canvas id="canvas1" width="410" height="410" style="border:1px solid #000000;">
           </canvas>
         </div>
         <div class='column'>
-          <div class='title'>BFS Step:
-            <span id='bfs-step'>0</span>
+          <div class='title'>Breadth-First Search
+            <div class="row">Step:
+              <span id='bfs-step'>0</span>
+            </div>
           </div>
-          <canvas id="canvas2" width="600" height="600" style="border:1px solid #000000;">
+          <canvas id="canvas2" width="410" height="410" style="border:1px solid #000000;">
           </canvas>
         </div>
       </div>
-  
-      <div class="row">
+
+      <div class="row maze-canvas">
         <div class="column">
-          <div class='title'>Double Direction BFS Step:
-            <span id='double-bfs-step'>0</span>
+          <div class='title'>Bidirection Breadth-First Search
+            <div class="row">Step:
+              <span id='double-bfs-step'>0</span>
+            </div>
           </div>
-          <canvas id="canvas3" width="600" height="600" style="border:1px solid #000000;">
+          <canvas id="canvas3" width="410" height="410" style="border:1px solid #000000;">
           </canvas>
         </div>
         <div class="column">
-          <div class='title'>Random Search Step:
-            <span id='random-step'>0</span>
+          <div class='title'>Random Search
+            <div class="row">Step:
+              <span id='random-step'>0</span>
+            </div>
           </div>
-          <canvas id="canvas4" width="600" height="600" style="border:1px solid #000000;">
+          <canvas id="canvas4" width="410" height="410" style="border:1px solid #000000;">
           </canvas>
         </div>
       </div>
     </div>
-  
+
     <div class="column right-container">
       <div class="row">
-        <button id='dfs-button'> DFS </button>
-        <button id='bfs-button'> BFS </button>
+        <button id='dfs-button'> Depth-First Search </button>
+        <button id='bfs-button'> Breadth-First Search </button>
       </div>
       <div class="row">
-        <button id='double-bfs-button'> Double Direction BFS </button>
+        <button id='double-bfs-button'> Bidirection Breadth-First Search </button>
         <button id='random-button'> Random Search </button>
       </div>
       <div id='description'></div>

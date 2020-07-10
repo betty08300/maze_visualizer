@@ -18,7 +18,7 @@ class Graph {
 
     this.ctx.beginPath();
     this.ctx.fillStyle = "black";
-    this.ctx.fillRect(0, 0, 600, 600);
+    this.ctx.fillRect(0, 0, 410, 410);
 
     for (let i = 0; i < GRID_HEIGHT; i++) {
       let row = [];
@@ -64,11 +64,10 @@ class Graph {
   }
 
   drawNode(row, col, COLOR, edgeDirection = null) {
-
     row = Number(row);
     col = Number(col);
-    let verticalOffset = (row * SPACE_SIZE) * 2;
-    let horizontalOffset = (col * SPACE_SIZE) * 2;
+    let verticalOffset = (row * SPACE_SIZE) * 2 + SPACE_SIZE;
+    let horizontalOffset = (col * SPACE_SIZE) * 2 + SPACE_SIZE;
 
     // draw the node
     this.ctx.fillStyle = COLOR;
@@ -329,7 +328,7 @@ class Graph {
     this.drawEnd();
   }
 
-  async randoSearch(){
+  async randoSearch() {
     const start = this.start.join(',');
     const end = this.end.join(',');
     const stack = [{ src: null, direction: null, dst: start }];

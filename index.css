@@ -14,11 +14,18 @@ body{
 }
 
 .right-container{
-  margin-top: 22px;
+  margin-top: 40px;
 }
 
 .row{
   display: flex;
+  
+}
+
+.maze-canvas{
+  justify-content: space-between;
+  margin: 10px 51px; 
+
 }
 
 button{
@@ -31,11 +38,34 @@ button{
   color: antiquewhite;
 }
 
-canvas{
-  margin: 10px 32px 32px;
+#description{
+  margin: 30px 6px; 
+  background-color: honeydew;
+  padding: 12px; 
+  opacity: 0.7;
+  width: 322px; 
+  height: 92px;
+  border-radius: 8px;
+}
 
+.title-container{
+  margin: 34px;
+  
+  padding: 12px;
+  
+}
+.project-description{
+  background-color: honeydew;
+  opacity: 0.7;
+  border-radius: 8px;
+  padding: 10px;
+  margin-top: 32px;
+}
+
+.project-title{
+  font-size: 26px; 
 }
 
 .title{
-  margin-left: 32px;
+  margin: 24px 0 10px;;
 }

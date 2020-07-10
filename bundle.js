@@ -20,7 +20,7 @@ const OPPOSITE = {
 module.exports = {
   GRID_HEIGHT: 20,
   GRID_WIDTH: 20,
-  SPACE_SIZE: 15,
+  SPACE_SIZE: 10,
   ANIMATION_FRAME_TIME: 20,
   COLOR: {
     exploredNode: 'purple',
@@ -54,7 +54,7 @@ class Graph {
 
     this.ctx.beginPath();
     this.ctx.fillStyle = "black";
-    this.ctx.fillRect(0, 0, 600, 600);
+    this.ctx.fillRect(0, 0, 410, 410);
 
     for (let i = 0; i < GRID_HEIGHT; i++) {
       let row = [];
@@ -100,11 +100,10 @@ class Graph {
   }
 
   drawNode(row, col, COLOR, edgeDirection = null) {
-
     row = Number(row);
     col = Number(col);
-    let verticalOffset = (row * SPACE_SIZE) * 2;
-    let horizontalOffset = (col * SPACE_SIZE) * 2;
+    let verticalOffset = (row * SPACE_SIZE) * 2 + SPACE_SIZE;
+    let horizontalOffset = (col * SPACE_SIZE) * 2 + SPACE_SIZE;
 
     // draw the node
     this.ctx.fillStyle = COLOR;
@@ -365,7 +364,7 @@ class Graph {
     this.drawEnd();
   }
 
-  async randoSearch(){
+  async randoSearch() {
     const start = this.start.join(',');
     const end = this.end.join(',');
     const stack = [{ src: null, direction: null, dst: start }];
@@ -421,19 +420,19 @@ const runSimulation = () => {
 };
 
 const getDfsText = () => {
-  document.getElementById('description').innerText = "depth-First traversal will continually travel deeper into a tree before switching branches. By given a node, we must visit all of it's descendants before visiting it's sibling. The strategy is to use an array as a stack, and use push to add to the top of the stack and pop to remove the top"
+  document.getElementById('description').innerText = "Implemented using a stack. A path is explored fully until a dead-end is reached, at which point a new path direction is chosen to explore."
 }
 
 const getBfsText = () => {
-  document.getElementById('description').innerText = "Breadth-First traversal will visit all nodes across a level, before moving to the next level, which means we travel as much as we can before going deeper into the tree. The strategy is to use as array as queue, and use shift to remove the front of the queue and push will add to the back of the queue"
+  document.getElementById('description').innerText = "Implemented using a queue. Paths in all directions take turns being incrementally explored."
 }
 
 const getBidirctionText = () => {
-  document.getElementById('description').innerText = "Double Breadth-First Search combine forward search which start vertex toward goal vertex and backward search form goal vertex toward start vertex. The strategy is to find the middle point between start and end, and to create two queues and the search terminates when find the same node in both queues"
+  document.getElementById('description').innerText = "Implemented using two queues. A Breadth-First search is conducted from both the start and the end. The two explored regions are guaranteed to meet the middle, meaning a path has been found."
 }
 
 const getRandomText = () => {
-  document.getElementById('description').innerText = "A type of local random search, where every iteration is choosing a random node to travel. To create an array as a stack, and a random node on every iteration to the top of the stack and pop to remove the top"
+  document.getElementById('description').innerText = "Unexplored edges are randomly chosen until the target is found. Because there is guaranteed to exist at least one path between two nodes in a spanning tree, the algorithm will eventually finish."
 }
 
 

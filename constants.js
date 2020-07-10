@@ -19,7 +19,7 @@ const OPPOSITE = {
 module.exports = {
   GRID_HEIGHT: 20,
   GRID_WIDTH: 20,
-  SPACE_SIZE: 15,
+  SPACE_SIZE: 10,
   ANIMATION_FRAME_TIME: 20,
   COLOR: {
     exploredNode: 'purple',

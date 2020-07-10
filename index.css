@@ -1,0 +1,41 @@
+body{
+  background: url(maze_background.jpg) no-repeat center center fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.wrapper{
+  display: flex;
+}
+
+.column{
+  display: flex;
+  flex-direction: column;
+}
+
+.right-container{
+  margin-top: 22px;
+}
+
+.row{
+  display: flex;
+}
+
+button{
+  width: 168px;
+  border-radius: 8px;
+  border: 1px solid;
+  margin: 5px;
+  padding: 6px 0;
+  background: linear-gradient(45deg, black, transparent);
+  color: antiquewhite;
+}
+
+canvas{
+  margin: 10px 32px 32px;
+
+}
+
+.title{
+  margin-left: 32px;
+}

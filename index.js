@@ -12,6 +12,10 @@ const runSimulation = () => {
   g4.randoSearch();
 };
 
+const getInnerText = () => {
+  document.getElementById('dfs-description').innerText
+}
+document.body.style.backgroundImage = "url('maze_background.jpg')";
 document.getElementById('run-maze').addEventListener('click', runSimulation);
-
+document.getElementById('dfs-button').addEventListener('click', getInnerText)
 runSimulation();

@@ -24,7 +24,7 @@ module.exports = {
   ANIMATION_FRAME_TIME: 20,
   COLOR: {
     exploredNode: '#828B9E',
-    path: '#75826C',
+    path: '#3588d7',
     start: '#F6D945',
     end: '#F69545'
   },

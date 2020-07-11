@@ -14,7 +14,7 @@ body{
 }
 
 .right-container{
-  margin-top: 40px;
+  margin-top: 449px;
 }
 
 .row{
@@ -38,6 +38,10 @@ button{
   color: antiquewhite;
 }
 
+#run-maze{
+  margin-top: 116px;
+}
+
 #description{
   margin: 30px 6px; 
   background-color: honeydew;
@@ -46,6 +50,9 @@ button{
   width: 322px; 
   height: 92px;
   border-radius: 8px;
+  font-size: 15px;
+  font-family: sans-serif;
+  color: #3c6465;
 }
 
 .title-container{
@@ -63,9 +70,26 @@ button{
 }
 
 .project-title{
-  font-size: 26px; 
+  font-size: 28px;
+  color: #3c6465;
+  font-family: sans-serif;  
+}
+
+.project-subtitle{
+  font-size: 20px;
+  color: rgb(70, 89, 109);
+  font-family: sans-serif;
 }
 
 .title{
-  margin: 24px 0 10px;;
+  margin: 24px 0 10px;
+  font-size: 15px;
+  font-family: sans-serif;
+  color: rgb(70, 89, 109);
+}
+
+p{
+  font-size: 16px;
+  font-family: sans-serif;
+  color: rgb(70, 89, 109);
 }

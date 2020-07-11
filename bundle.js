@@ -23,10 +23,10 @@ module.exports = {
   SPACE_SIZE: 10,
   ANIMATION_FRAME_TIME: 20,
   COLOR: {
-    exploredNode: 'purple',
-    path: 'pink',
-    start: 'blue',
-    end: 'red'
+    exploredNode: '#828B9E',
+    path: '#75826C',
+    start: '#F6D945',
+    end: '#F69545'
   },
   OPPOSITE,
   randomNum,

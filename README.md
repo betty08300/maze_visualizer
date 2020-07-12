@@ -1,7 +1,7 @@
 # Maze Vaisulizer 
 
 ## Background and Overview
-Using HTML Canvas to render four identical mazes to show the speed of each algorithem search a sucessful path.
+Using HTML Canvas to render four identical mazes to show the speed of each algorithem search for a sucessful path.
 
 ## Four Alrogithem
 * Depth-First Search 

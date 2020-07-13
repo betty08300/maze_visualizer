@@ -1,4 +1,4 @@
-# Maze Vaisulizer 
+# Maze Visualizer 
 
 [Live](http://bettywren.com/maze_visualizer/)
 

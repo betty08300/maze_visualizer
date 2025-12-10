@@ -1,4 +1,11 @@
+<<<<<<< HEAD
 # Maze Visualizer
+=======
+# Maze Visualizer 
+
+[Live](https://betty08300.github.io/maze_visualizer/
+)
+>>>>>>> e6a60770f3a3031f7ffa5984137e12766d9988a6
 
 ## Background and Overview
 
